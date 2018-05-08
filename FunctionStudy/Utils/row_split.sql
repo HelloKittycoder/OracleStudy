@@ -1,17 +1,17 @@
---´´½¨ĞèÒªÓÃÓÚ·µ»ØµÄÀàĞÍ
-create or replace type t_ret_table  
+--åˆ›å»ºéœ€è¦ç”¨äºè¿”å›çš„ç±»å‹
+create or replace type t_ret_table
     as table of varchar2(1000);
 
 create or replace function row_split(var_str varchar2, var_split in varchar2)
---½«×Ö·û´®·Ö¸îÎª¶àÌõ¼ÇÂ¼
-/* Ê¹ÓÃÊ¾Àı
+--å°†å­—ç¬¦ä¸²åˆ†å‰²ä¸ºå¤šæ¡è®°å½•
+/* ä½¿ç”¨ç¤ºä¾‹
 select * from table(row_split('|111|222|', '|');
   
 select * from table(row_split(' 111 222 ', ' '));
   
 select * from table(row_split(',111,222,', ','));
 
-¸ü¶àÇë²Î¼û https://blog.csdn.net/u010999809/article/details/79825731
+æ›´å¤šè¯·å‚è§ https://blog.csdn.net/u010999809/article/details/79825731
 */
 return t_ret_table pipelined  
 as  
@@ -20,14 +20,14 @@ var_element varchar2(1000);
 n_length number:=length(var_split);
 begin  
   /*  
-    ¶ÔÊäÈëµÄ×Ö·û´®×öÔ¤´¦Àí£¬È¥µôÁ½¶ËµÄ·Ö¸ô·û  
-  £¨²Î¿¼https://jingyan.baidu.com/article/3a2f7c2e72324e26afd6119a.html£©  
+    å¯¹è¾“å…¥çš„å­—ç¬¦ä¸²åšé¢„å¤„ç†ï¼Œå»æ‰ä¸¤ç«¯çš„åˆ†éš”ç¬¦  
+  ï¼ˆå‚è€ƒhttps://jingyan.baidu.com/article/3a2f7c2e72324e26afd6119a.htmlï¼‰  
   */  
   var_tmp := trim(both var_split from var_str);  
-  --Ö»Òª×Ö·û´®ÖĞ´æÔÚ·Ö¸ô·û£¬Ôò¼ÌĞøÖ´ĞĞ½«·Ö¸ô³öÀ´µÄ×Ö·ûÈ¡³öµÄ²Ù×÷  
+  --åªè¦å­—ç¬¦ä¸²ä¸­å­˜åœ¨åˆ†éš”ç¬¦ï¼Œåˆ™ç»§ç»­æ‰§è¡Œå°†åˆ†éš”å‡ºæ¥çš„å­—ç¬¦å–å‡ºçš„æ“ä½œ  
   while instr(var_tmp, var_split) > 0 loop  
     var_element := substr(var_tmp, 1, instr(var_tmp, var_split)-1);  
-    -- Ã¿È¡Íê×Ö·û´®ÀïµÄ·Ö¸ôµÄ×Ö·û£¬¸Ã×Ö·û½«´ÓÔ­Ê¼×Ö·û´®ÖĞÌŞ³ı  
+    -- æ¯å–å®Œå­—ç¬¦ä¸²é‡Œçš„åˆ†éš”çš„å­—ç¬¦ï¼Œè¯¥å­—ç¬¦å°†ä»åŸå§‹å­—ç¬¦ä¸²ä¸­å‰”é™¤  
     var_tmp := substr(var_tmp,  
                       instr(var_tmp, var_split)+n_length,  
                       length(var_tmp));  
