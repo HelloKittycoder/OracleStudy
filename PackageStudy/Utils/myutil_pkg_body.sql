@@ -34,4 +34,19 @@ create or replace package body myutil_pkg as
   end find_empinfo;
   --------------------------------------员工信息end---------------------------------
 
+  --------------------------------------工具function---------------------------------
+  /**
+  * 判断是否为数字
+  **/
+  function is_number(str varchar2) return varchar2
+    as
+      num_ number;
+  begin
+    num_:=to_number(str);
+    return 'Y';
+  exception
+    when others then
+      return 'N';
+  end is_number;
+
 end myutil_pkg;

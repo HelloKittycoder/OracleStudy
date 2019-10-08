@@ -25,4 +25,11 @@ create or replace package myutil_pkg authid current_user as
 
   --------------------------------------员工信息end---------------------------------
 
+  --------------------------------------工具function---------------------------------
+  /**
+  * 判断是否为数字
+  **/
+  --使用示例：select myutil_pkg.is_number('a') from dual;
+  function is_number(str varchar2) return varchar2;
+
 end myutil_pkg;
