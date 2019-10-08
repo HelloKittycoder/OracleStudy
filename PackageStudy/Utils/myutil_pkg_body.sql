@@ -49,4 +49,25 @@ create or replace package body myutil_pkg as
       return 'N';
   end is_number;
 
+  /**
+  * 获取当前数据库的表的统计数据（非空表、空表、所有表的数量）
+  **/
+  function tab_status return tab_str pipelined
+    as
+      v_ret varchar2(500);
+      tmp_num number;
+  begin
+    select count(*) into tmp_num from user_tables where num_rows != 0; -- 非空表
+    v_ret:='非空表：'||tmp_num;
+    pipe row(v_ret);
+
+    select count(*) into tmp_num from user_tables where num_rows = 0; -- 空表
+    v_ret:='空表：'||tmp_num;
+    pipe row(v_ret);
+
+    select count(*) into tmp_num from user_tables; -- 表的总数
+    v_ret:='总数：'||tmp_num;
+    pipe row(v_ret);
+  end tab_status;
+
 end myutil_pkg;

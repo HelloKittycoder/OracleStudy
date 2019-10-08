@@ -6,3 +6,4 @@ find_empinfo 查询员工信息
 
 -----------工具function-----------  
 is_number(str varchar2) 判断是否为数字  
+tab_status 获取当前数据库的表的统计数据（非空表、空表、所有表的数量）  
