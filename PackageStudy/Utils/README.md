@@ -14,4 +14,5 @@ is_number(str varchar2) 判断是否为数字
 tab_status 获取当前数据库的表的统计数据（非空表、空表、所有表的数量）  
 
 -----------工具procedure-----------  
+statistics_all_tab 刷新user_tables中的统计数据  
 p_generate_sql(crudType in varchar2, vc_table_name in varchar2) 生成java代码中的查询、新增、修改语句  

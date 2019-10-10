@@ -42,6 +42,21 @@ create or replace package myutil_pkg authid current_user as
 
   --------------------------------------工具procedure---------------------------------
   /**
+  * 刷新user_tables中的统计数据
+  * 解决user_tables中num_rows查不出来的问题
+  **/
+  --使用示例：
+  /**
+  * begin
+  *   myutil_pkg.statistics_all_tab;
+  * end;
+  *
+  * 可以用 select * from table(myutil_pkg.tab_status);
+  * 验证刷新统计数据操作是否成功
+  */
+  procedure statistics_all_tab;
+
+  /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）
   * vc_table_name 表名称

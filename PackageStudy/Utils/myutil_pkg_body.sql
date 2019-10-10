@@ -72,6 +72,20 @@ create or replace package body myutil_pkg as
 
   --------------------------------------工具procedure---------------------------------
   /**
+  * 刷新user_tables中的统计数据
+  * https://blog.csdn.net/chfyljt/article/details/80623078
+  **/
+  procedure statistics_all_tab as
+  begin
+    for rs in (select ut.table_name from user_tables ut) loop
+      execute immediate 'analyze table'||rs.table_name||' compute statistics';
+    end loop;
+  exception
+    when others then
+      dbms_output.put_line('errm statistics_all_tab:'||sqlerrm);
+  end statistics_all_tab;
+
+  /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）
   * vc_table_name 表名称
