@@ -40,4 +40,25 @@ create or replace package myutil_pkg authid current_user as
   --使用示例：select * from table(myutil_pkg.tab_status);
   function tab_status return tab_str pipelined;
 
+  --------------------------------------工具procedure---------------------------------
+  /**
+  * 生成java代码中的查询、新增、修改语句
+  * crudType 操作类型（select 查询；insert 新增；update 修改）
+  * vc_table_name 表名称
+  */
+  -- 使用示例：
+  /*
+  declare
+   vc_table_name varchar2(200);
+  begin
+    vc_table_name:='t_student';
+    dbms_output.put_line('=====生成'||vc_table_name||'的语句====');
+    myutil_pkg.P_GENERATE_SQL('select',vc_table_name);
+    myutil_pkg.P_GENERATE_SQL('insert',vc_table_name);
+    myutil_pkg.P_GENERATE_SQL('update',vc_table_name);
+    dbms_output.put_line('');
+  end;
+   */
+  procedure p_generate_sql(crudType in varchar2, vc_table_name in varchar2);
+
 end myutil_pkg;
