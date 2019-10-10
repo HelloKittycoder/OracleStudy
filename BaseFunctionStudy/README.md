@@ -42,4 +42,10 @@ select to_char(date'2019-10-10','dd') from dual; -- 10
 select to_char(to_date('2019-10-10','yyyy-mm-dd')-1,'dd') from dual; -- 09
 select to_char(date'2019-10-10'-1,'dd') from dual; -- 09
 ```
+
+```sql
+-- 假如今天是2019-10-10
+select trunc(sysdate, 'mm') from dual; -- trunc(sysdate, 'mm')得到的是日期格式，2019-10-10（所以在做比较的时候要和日期格式的字段来比较）
+select to_char(trunc(sysdate, 'mm'), 'yyyy-mm-dd hh24:mi:ss') from dual; -- 这行sql可以验证，而且精确一点是2019-10-10 00:00:00
+```
 参考链接：https://blog.csdn.net/ZhaoChengWeiCSDN/article/details/81324050
