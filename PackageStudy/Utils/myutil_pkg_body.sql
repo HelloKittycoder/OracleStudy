@@ -70,6 +70,21 @@ create or replace package body myutil_pkg as
     pipe row(v_ret);
   end tab_status;
 
+  /**
+  * 返回指定字符串的md5加密结果
+  **/
+  function md5(input_str in varchar2) return varchar2
+    as
+      raw_input raw(128):=UTL_RAW.cast_to_raw(input_str);
+      decryted_raw raw(2048);
+      error_in_input_buffer_length exception;
+  begin
+    DBMS_OBFUSCATION_TOOLKIT.md5(input=>raw_input,
+        checksum=>decryted_raw);
+    return LOWER(RAWTOHEX(decryted_raw));
+    -- return input_string;
+  end md5;
+
   --------------------------------------工具procedure---------------------------------
   /**
   * 刷新user_tables中的统计数据

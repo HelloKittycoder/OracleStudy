@@ -40,6 +40,13 @@ create or replace package myutil_pkg authid current_user as
   --使用示例：select * from table(myutil_pkg.tab_status);
   function tab_status return tab_str pipelined;
 
+  /**
+  * 返回指定字符串的md5加密结果
+  * 使用示例：select myutil_pkg.md5('888888') from dual; -- 21218cca77804d2ba1922c33e0151105
+  * select myutil_pkg.md5('zhangsan') from dual; -- 01d7f40760960e7bd9443513f22ab9af
+  **/
+  function md5(input_str in varchar2) return varchar2;
+
   --------------------------------------工具procedure---------------------------------
   /**
   * 刷新user_tables中的统计数据
