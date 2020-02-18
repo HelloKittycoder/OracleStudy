@@ -49,6 +49,21 @@ create or replace package myutil_pkg authid current_user as
 
   --------------------------------------工具procedure---------------------------------
   /**
+  * 将序列的当前值恢复至指定数字
+  * seqName 序列名称
+  * num 需要恢复到哪个数字
+  **/
+  --使用示例：
+  /**
+  * begin
+  *   myutil_pkg.updateSeqToNum('seq_mytest',1);
+  * end;
+  *
+  * 运行select seq_mytest.currval from dual;可以进行验证
+  */
+  procedure updateSeqToNum(seqName varchar2, num number);
+
+  /**
   * 刷新user_tables中的统计数据
   * 解决user_tables中num_rows查不出来的问题
   **/

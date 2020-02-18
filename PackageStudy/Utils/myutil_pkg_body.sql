@@ -87,6 +87,42 @@ create or replace package body myutil_pkg as
 
   --------------------------------------工具procedure---------------------------------
   /**
+  * 将序列的当前值恢复至指定数字
+  * seqName 序列名称
+  * num 需要恢复到哪个数字
+  **/
+  procedure updateSeqToNum(seqName varchar2, num number) as
+    n number;
+    comm_exception exception;
+  begin
+    if num < 1 then
+      raise comm_exception;
+    else
+      --https://blog.csdn.net/u010999809/article/details/79943924
+      --https://blog.csdn.net/pete_emperor/article/details/82853277
+      --获取序列的下一个值
+      execute immediate 'select '||seqName||'.nextval from dual' into n;
+
+      --修改序列的minvalue参数
+      execute immediate 'alter sequence '||seqName||' minvalue 1';
+
+      if n>1 then
+        n:=-(n-num); --这里是要恢复到num（num>=1）
+        --修改increment参数
+        execute immediate 'alter sequence '||seqName||' increment by '||n;
+        execute immediate 'select '||seqName||'.nextval from dual' into n;
+
+        --恢复increment参数值
+        execute immediate 'alter sequence '||seqName||' increment by 1';
+      end if;
+    end if;
+  exception
+    when comm_exception then
+      raise_application_error(-20001,'序列数字不能小于1');
+
+  end updateSeqToNum;
+
+  /**
   * 刷新user_tables中的统计数据
   * https://blog.csdn.net/chfyljt/article/details/80623078
   **/
