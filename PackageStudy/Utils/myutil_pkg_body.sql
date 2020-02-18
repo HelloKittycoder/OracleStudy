@@ -123,6 +123,29 @@ create or replace package body myutil_pkg as
   end updateSeqToNum;
 
   /**
+  * 批量创建序列
+  * seqNames 序列名称数组
+  **/
+  procedure createSeqs(seqNames tab_str) as
+  begin
+    --https://blog.csdn.net/zzkongfu/article/details/7480958
+    --https://blog.csdn.net/wonder4/article/details/649869
+    --提示权限不足
+    --https://blog.csdn.net/jerryitgo/article/details/79220598
+    --http://www.cnblogs.com/yhoralce/p/6817010.html?utm_source=itdadao&utm_medium=referral
+    --循环table中的数据
+    for i in 1 .. seqNames.count loop
+      --如果存放的不是空字符串，则拼接语句执行创建序列
+      if seqNames(i) is not null then
+        --dbms_output.put_line('++++++'||seqNames(i));
+        execute immediate 'create sequence '||seqNames(i)||' '||
+        'minvalue 1 start with 1 '||
+        'increment by 1 cache 20';
+      end if;
+    end loop;
+  end createSeqs;
+
+  /**
   * 刷新user_tables中的统计数据
   * https://blog.csdn.net/chfyljt/article/details/80623078
   **/
