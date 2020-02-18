@@ -146,6 +146,19 @@ create or replace package body myutil_pkg as
   end createSeqs;
 
   /**
+  * 批量删除序列
+  * seqNames 序列名称数组
+  **/
+  procedure dropSeqs(seqNames tab_str) as
+  begin
+    for i in 1 .. seqNames.count loop
+      if seqNames(i) is not null then
+        execute immediate 'drop sequence '||seqNames(i);
+      end if;
+    end loop;
+  end dropSeqs;
+
+  /**
   * 刷新user_tables中的统计数据
   * https://blog.csdn.net/chfyljt/article/details/80623078
   **/

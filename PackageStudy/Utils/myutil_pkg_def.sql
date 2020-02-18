@@ -82,6 +82,24 @@ create or replace package myutil_pkg authid current_user as
   procedure createSeqs(seqNames tab_str);
 
   /**
+  * 批量删除序列
+  * seqNames 序列名称数组
+  **/
+  --使用示例：
+  /*
+  declare
+    seqNames myutil_pkg.tab_str:=myutil_pkg.tab_str(null);
+  begin
+    seqNames.extend(2,1);
+    seqNames(1):='seq_mytest1';
+    seqNames(2):='seq_mytest2';
+    seqNames(3):='seq_mytest3';
+    myutil_pkg.dropSeqs(seqNames);
+  end;
+  */
+  procedure dropSeqs(seqNames tab_str);
+
+  /**
   * 刷新user_tables中的统计数据
   * 解决user_tables中num_rows查不出来的问题
   **/
