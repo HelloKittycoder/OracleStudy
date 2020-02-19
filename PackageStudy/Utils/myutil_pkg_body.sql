@@ -173,6 +173,20 @@ create or replace package body myutil_pkg as
   end statistics_all_tab;
 
   /**
+  * 给需要做导出操作的数据库，其中的空表分配空间（如果空表没有分配空间的话）
+  * https://www.cnblogs.com/ningvsban/p/3603678.html
+  **/
+  procedure distribExtent as
+  begin
+    for rs in (select ut.table_name from user_tables ut) loop
+      execute immediate 'alter table '||rs.table_name||' allocate extent';
+    end loop;
+  exception
+    when others then
+      dbms_output.put_line('errm distribExtent:'||sqlerrm);
+  end distribExtent;
+
+  /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）
   * vc_table_name 表名称

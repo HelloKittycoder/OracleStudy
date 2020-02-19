@@ -115,6 +115,16 @@ create or replace package myutil_pkg authid current_user as
   procedure statistics_all_tab;
 
   /**
+  * 给需要做导出操作的数据库，其中的空表分配空间（如果空表没有分配空间的话）
+  **/
+  /**
+  * begin
+  *   myutil_pkg.distribExtent;
+  * end;
+  */
+  procedure distribExtent;
+
+  /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）
   * vc_table_name 表名称
