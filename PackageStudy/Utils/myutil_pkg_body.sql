@@ -186,6 +186,56 @@ create or replace package body myutil_pkg as
       dbms_output.put_line('errm distribExtent:'||sqlerrm);
   end distribExtent;
 
+  /** 将某张表中指定字段更改为特定数据类型
+  * 参数：
+  * tableName 需要操作的表
+  * primKeyName 需要操作的表的主键名
+  * changeFieldName 需要操作的字段
+  * toType 操作的字段需要转换成的数据类型
+  **/
+  procedure changeDataType(tableName varchar2,
+    primKeyName varchar2,
+    changeFieldName varchar2,
+    toType varchar2
+  ) as
+    bakFieldSelectStr varchar2(300); --需要转换的字段在插入临时表时的查询字符串
+  begin
+    --创建临时表
+    execute immediate
+    'create table temp_table(
+       '||primKeyName||' number,'
+       ||changeFieldName||' '||toType
+    ||')';
+
+    --把数据插到临时表中
+    if toType = 'date' then --日期类型
+      bakFieldSelectStr:='to_date(pe.'||changeFieldName||',''yyyy-mm-dd'')';
+    else --普通类型
+      bakFieldSelectStr:='pe.'||changeFieldName;
+    end if;
+
+    execute immediate
+    'insert into temp_table('||primKeyName||', '||changeFieldName||')
+    select pe.'||primKeyName||','||bakFieldSelectStr||' from '||tableName||' pe';
+
+    --删除原有表的数据
+    execute immediate
+    'update '||tableName||' set '||changeFieldName||' = null';
+
+    --修改原有表的数据类型
+    execute immediate 'alter table '||tableName||' modify '||changeFieldName||' '||toType;
+
+    --修改原有表的数据
+    execute immediate
+    'update '||tableName||' pe set (pe.'||changeFieldName||') =
+    (select tt.'||changeFieldName||' from temp_table tt where tt.'||primKeyName||' = pe.'||primKeyName||')';
+
+    commit;
+
+    --删除临时表
+    execute immediate 'drop table temp_table';
+  end changeDataType;
+
   /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）

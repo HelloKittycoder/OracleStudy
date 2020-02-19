@@ -124,6 +124,26 @@ create or replace package myutil_pkg authid current_user as
   */
   procedure distribExtent;
 
+  /** 将某张表中指定字段更改为特定数据类型
+  * 参数：
+  * tableName 需要操作的表
+  * primKeyName 需要操作的表的主键名
+  * changeFieldName 需要操作的字段
+  * toType 操作的字段需要转换成的数据类型
+  **/
+  /**
+  * 把mytest表中的sbirthday字段改成date类型，smoney字段改成number类型
+  * begin
+  *   myutil_pkg.changeDataType('mytest','sid','sbirthday','date');
+  *   myutil_pkg.changeDataType('mytest','sid','smoney','number');
+  * end;
+  */
+  procedure changeDataType(tableName varchar2,
+    primKeyName varchar2,
+    changeFieldName varchar2,
+    toType varchar2
+  );
+
   /**
   * 生成java代码中的查询、新增、修改语句
   * crudType 操作类型（select 查询；insert 新增；update 修改）
