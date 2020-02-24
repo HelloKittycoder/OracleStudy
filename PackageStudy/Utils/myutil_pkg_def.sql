@@ -14,8 +14,42 @@ create or replace package myutil_pkg authid current_user as
   );
   type emp_record_tab is table of emp_record;
 
+  -- 下拉类型记录
+  type dict_tab is table of t_dict%rowtype;
+  type simple_dict_record is record(vc_cde t_dict.vc_cde%type,
+                                   vc_nme t_dict.vc_nme%type,
+                                   vc_type t_dict.vc_type%type,
+                                   vc_type_name t_dict.vc_type_name%type);
+  type simple_dict_tab is table of simple_dict_record;
+
+  type v_dict_type_arr is varray(100) of varchar2(20);
+  dictTypeArr v_dict_type_arr:=v_dict_type_arr(null);
+
   -- 定义通用的字符串数组参数类型（传入或返回参数）
   type tab_str is table of varchar(30);
+
+  --------------------------------------初始化方法---------------------------------
+  procedure initialize;
+
+  --------------------------------------edim相关操作start---------------------------------
+  /**
+  * 根据类型查询对应的下拉选项值
+  **/
+  --使用示例：
+  /*
+  select * from table(myutil_pkg.find_dict('sex'));
+  select * from table(myutil_pkg.find_dict('2'));
+  */
+  function find_dict(vc_dict_type varchar2) return dict_tab pipelined;
+
+  --使用示例：
+  /*
+  select * from table(myutil_pkg.find_sdict('sex'));
+  select * from table(myutil_pkg.find_sdict('2'));
+  */
+  function find_sdict(vc_dict_type varchar2) return simple_dict_tab pipelined;
+
+  --------------------------------------edim相关操作end---------------------------------
 
   --------------------------------------员工信息start---------------------------------
 

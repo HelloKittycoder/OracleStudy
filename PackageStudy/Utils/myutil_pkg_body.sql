@@ -5,6 +5,92 @@ create or replace package body myutil_pkg as
    */
   type ref_type is ref cursor;
 
+  --------------------------------------初始化操作---------------------------------
+  --package中如何进行初始化操作？ http://www.dba-oracle.com/plsql/t_plsql_global_data.htm
+  procedure initialize as
+  begin
+    --初始化类型数组
+    --dictTypeArr v_dict_type_arr:=v_dict_type_arr(null);
+    dictTypeArr.extend(4,1); --初始化3个元素 http://blog.itpub.net/17013648/viewspace-1116033/
+    dictTypeArr(1):='docType';
+    dictTypeArr(2):='sex';
+    dictTypeArr(3):='reportType';
+    dictTypeArr(4):='currency';
+    dictTypeArr(5):='ageSituation';
+  end initialize;
+
+  --------------------------------------dict相关操作start---------------------------------
+  /**
+  * 根据类型查询对应的下拉选项值
+  **/
+  function find_dict(vc_dict_type varchar2) return dict_tab pipelined
+    as
+      dict_ref ref_type;
+      v_ret t_dict%rowtype;
+      temp_dict_type varchar2(100);
+      --v_ret edim_tab;
+  begin
+    --尝试进行类型转换
+    if is_number(vc_dict_type)='Y' then
+      temp_dict_type:=dictTypeArr(vc_dict_type);
+    else
+      temp_dict_type:=vc_dict_type;
+    end if;
+
+    open dict_ref for 'select * from t_dict where vc_type = :1'
+      || ' order by to_number(vc_ord)'
+      using temp_dict_type;
+    /*loop
+      fetch dict_ref into v_ret;
+      pipe row(v_ret);
+      exit when dict_ref%notfound;
+    end loop;*/
+
+    fetch dict_ref into v_ret;
+    loop
+      exit when dict_ref%notfound;
+      pipe row(v_ret);
+      fetch dict_ref into v_ret;
+    end loop;
+
+    --fetch dict_ref bulk collect into v_ret;
+    --pipe row(v_ret);
+    close dict_ref;
+  end find_dict;
+
+  function find_sdict(vc_dict_type varchar2) return simple_dict_tab pipelined
+    as
+      dict_ref ref_type;
+      v_ret simple_dict_record;
+      temp_dict_type varchar2(100);
+  begin
+    --尝试进行类型转换
+    if is_number(vc_dict_type)='Y' then
+      temp_dict_type:=dictTypeArr(vc_dict_type);
+    else
+      temp_dict_type:=vc_dict_type;
+    end if;
+
+    open dict_ref for 'select vc_cde,vc_nme,vc_type,vc_type_name from t_dict where vc_type = :1'
+      || ' order by to_number(vc_ord)'
+      using temp_dict_type;
+    /*loop
+      fetch dict_ref into v_ret;
+      pipe row(v_ret);
+      exit when dict_ref%notfound;
+    end loop;*/
+
+    fetch dict_ref into v_ret;
+    loop
+      exit when dict_ref%notfound;
+      pipe row(v_ret);
+      fetch dict_ref into v_ret;
+    end loop;
+
+    close dict_ref;
+  end find_sdict;
+  --------------------------------------dict相关操作end---------------------------------
+
   --------------------------------------员工信息start---------------------------------
   /**
   * 查询员工信息
@@ -327,4 +413,7 @@ create or replace package body myutil_pkg as
     dbms_output.put_line(v_output_sql);
   end;
 
+---初始化操作
+begin
+  initialize;
 end myutil_pkg;
