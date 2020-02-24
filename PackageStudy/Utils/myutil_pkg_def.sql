@@ -81,6 +81,15 @@ create or replace package myutil_pkg authid current_user as
   **/
   function md5(input_str in varchar2) return varchar2;
 
+  /**
+  * 计算时间差（年y，月M，日d，时h，分m，秒s）
+  **/
+  /*
+  使用示例：计算当前时间距离2018年4月1日的天数差
+  select myutil_pkg.time_diff(sysdate, to_date('2018-04-01','yyyy-MM-dd'), 'd') from dual;
+  */
+  function time_diff(param_date1 in date, param_date2 in date, var_options in varchar2) return number;
+
   --------------------------------------工具procedure---------------------------------
   /**
   * 将序列的当前值恢复至指定数字

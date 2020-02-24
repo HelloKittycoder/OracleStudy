@@ -171,6 +171,33 @@ create or replace package body myutil_pkg as
     -- return input_string;
   end md5;
 
+  /**
+  * 计算时间差（年y，月M，日d，时h，分m，秒s）
+  *
+  * 参考链接：https://blog.csdn.net/sunyqcn/article/details/68067089
+  * https://www.cnblogs.com/aspnet_csharp/archive/2012/05/09/2491546.html
+  **/
+  function time_diff(param_date1 in date, param_date2 in date, var_options in varchar2)
+  return number
+    as
+  calc_result number;
+  begin
+    if var_options = 'y' then--年
+      select trunc(months_between(param_date1, param_date2)/12) into calc_result from dual;
+    elsif var_options = 'M' then--月
+      select trunc(months_between(param_date1, param_date2)) into calc_result from dual;
+    elsif var_options = 'd' then--日
+      select trunc(to_number(param_date1 - param_date2)) into calc_result from dual;
+    elsif var_options = 'h' then--时
+      select trunc(to_number(param_date1 - param_date2)*24) into calc_result from dual;
+    elsif var_options = 'm' then--分
+      select trunc(to_number(param_date1 - param_date2)*24*60) into calc_result from dual;
+    elsif var_options = 's' then--秒
+      select trunc(to_number(param_date1 - param_date2)*24*60*60) into calc_result from dual;
+    end if;
+    return abs(calc_result);
+  end time_diff;
+
   --------------------------------------工具procedure---------------------------------
   /**
   * 将序列的当前值恢复至指定数字
